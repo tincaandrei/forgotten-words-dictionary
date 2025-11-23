@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
 // Support either a full DATABASE_URL or individual PG* env vars.
 const useConnectionString = Boolean(process.env.DATABASE_URL);

@@ -1,55 +1,120 @@
-import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 
 class NavigationBar extends Component {
+  state = {
+    drawerOpen: false,
+  };
+
+  toggleDrawer = () => {
+    this.setState((prev) => ({ drawerOpen: !prev.drawerOpen }));
+  };
+
+  closeDrawer = () => {
+    this.setState({ drawerOpen: false });
+  };
+
+  handleNavClick = () => {
+    this.closeDrawer();
+  };
+
+  handleToggleTheme = () => {
+    const { onToggleTheme } = this.props;
+    if (onToggleTheme) {
+      onToggleTheme();
+    }
+  };
+
   render() {
     const { currentUserName, theme, onToggleTheme } = this.props;
-    const themeLabel = theme === 'dark' ? 'Light mode' : 'Dark mode';
+    const { drawerOpen } = this.state;
+    const themeStatusLabel = theme === "dark" ? "On" : "Off";
 
     return (
-      <header className="dictionary-header">
-        <div className="dictionary-brand">Blandiana Dictionary</div>
-        <nav className="dictionary-nav">
-          <NavLink
-            to="/browse"
-            className={({ isActive }) =>
-              isActive ? 'nav-link active' : 'nav-link'
-            }
+      <>
+        <header className="topbar">
+          <button
+            type="button"
+            className="menu-button"
+            aria-label="Toggle navigation menu"
+            aria-expanded={drawerOpen}
+            aria-controls="dictionary-drawer"
+            onClick={this.toggleDrawer}
           >
-            Browse
-          </NavLink>
-          <NavLink
-            to="/search"
-            className={({ isActive }) =>
-              isActive ? 'nav-link active' : 'nav-link'
-            }
+            <span className={`menu-icon ${drawerOpen ? "open" : ""}`} />
+          </button>
+          <div className="brand-title">Blandiana Dictionary</div>
+        </header>
+
+        <div
+          id="dictionary-drawer"
+          className={`nav-drawer ${drawerOpen ? "open" : ""}`}
+          role="navigation"
+        >
+          <button
+            type="button"
+            className="drawer-close"
+            aria-label="Close navigation menu"
+            onClick={this.closeDrawer}
           >
-            Search
-          </NavLink>
-          <NavLink
-            to="/add"
-            className={({ isActive }) =>
-              isActive ? 'nav-link active' : 'nav-link'
-            }
-          >
-            Add new word
-          </NavLink>
-        </nav>
-        <div className="nav-right">
-          {onToggleTheme && (
-            <button
-              type="button"
-              className="nav-theme-toggle"
-              onClick={onToggleTheme}
+            X
+          </button>
+          <div className="drawer-title">Blandiana Dictionary</div>
+          <nav className="drawer-nav">
+            {currentUserName && (
+              <div className="drawer-user">Hello, {currentUserName}</div>
+            )}
+            <NavLink
+              to="/browse"
+              className={({ isActive }) =>
+                isActive ? "drawer-link active" : "drawer-link"
+              }
+              onClick={this.handleNavClick}
             >
-              {themeLabel}
-            </button>
-          )}
-          {currentUserName && (
-            <div className="user-pill">Hello, {currentUserName}</div>
-          )}
+              Browse
+            </NavLink>
+            <NavLink
+              to="/search"
+              className={({ isActive }) =>
+                isActive ? "drawer-link active" : "drawer-link"
+              }
+              onClick={this.handleNavClick}
+            >
+              Search
+            </NavLink>
+            <NavLink
+              to="/add"
+              className={({ isActive }) =>
+                isActive ? "drawer-link active" : "drawer-link"
+              }
+              onClick={this.handleNavClick}
+            >
+              Add new word
+            </NavLink>
+          </nav>
+
+          <div className="drawer-section">
+            {onToggleTheme && (
+              <button
+                type="button"
+                className="drawer-theme"
+                onClick={this.handleToggleTheme}
+              >
+                <span>Dark mode</span>
+                <span className="status-label">
+                  <span className="status-dot" aria-hidden="true" />
+                  {themeStatusLabel}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
-      </header>
+
+        <div
+          className={`drawer-backdrop ${drawerOpen ? "open" : ""}`}
+          onClick={this.closeDrawer}
+        />
+      </>
     );
   }
 }

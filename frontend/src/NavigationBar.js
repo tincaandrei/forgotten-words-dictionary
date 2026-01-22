@@ -43,7 +43,14 @@ class NavigationBar extends Component {
           >
             <span className={`menu-icon ${drawerOpen ? "open" : ""}`} />
           </button>
-          <div className="brand-title">Blandiana Dictionary</div>
+          <div className="brand-title">
+            <img
+              src="/dict_logo.png"
+              alt="Blandiana Dictionary logo"
+              className="brand-logo"
+            />
+            <span>Blandiana Dictionary</span>
+          </div>
         </header>
 
         <div
@@ -59,7 +66,14 @@ class NavigationBar extends Component {
           >
             X
           </button>
-          <div className="drawer-title">Blandiana Dictionary</div>
+          <div className="drawer-brand">
+            <img
+              src="/dict_logo.png"
+              alt="Blandiana Dictionary logo"
+              className="drawer-logo"
+            />
+            <div className="drawer-title">Blandiana Dictionary</div>
+          </div>
           <nav className="drawer-nav">
             {currentUserName && (
               <div className="drawer-user">Hello, {currentUserName}</div>
@@ -83,13 +97,22 @@ class NavigationBar extends Component {
               Search
             </NavLink>
             <NavLink
+              to="/expressions"
+              className={({ isActive }) =>
+                isActive ? "drawer-link active" : "drawer-link"
+              }
+              onClick={this.handleNavClick}
+            >
+              Expressions
+            </NavLink>
+            <NavLink
               to="/add"
               className={({ isActive }) =>
                 isActive ? "drawer-link active" : "drawer-link"
               }
               onClick={this.handleNavClick}
             >
-              Add new word
+              Add new word or expression
             </NavLink>
           </nav>
 

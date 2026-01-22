@@ -38,6 +38,19 @@ class NamePickerScreen extends Component {
   render() {
     return (
       <div style={{ padding: '2rem', maxWidth: 400, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <img
+            src="/dict_logo.png"
+            alt="Blandiana Dictionary logo"
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: 16,
+              objectFit: 'contain',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.15)'
+            }}
+          />
+        </div>
         <h2>Who are you?</h2>
         <form onSubmit={this.handleSubmit}>
           <div style={{ marginBottom: '1rem' }}>

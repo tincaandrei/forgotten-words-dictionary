@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { getWords } from './api';
+import { getWord, getWords } from './api';
+import WordDetailModal from './WordDetailModal';
 
 class BrowsePage extends Component {
   constructor(props) {
@@ -7,10 +8,17 @@ class BrowsePage extends Component {
     this.state = {
       words: [],
       loading: false,
-      error: null
+      error: null,
+      selectedWord: null,
+      detailOpen: false,
+      detailError: null
     };
 
     this.fetchWords = this.fetchWords.bind(this);
+    this.openWordDetails = this.openWordDetails.bind(this);
+    this.closeWordDetails = this.closeWordDetails.bind(this);
+    this.handleWordUpdated = this.handleWordUpdated.bind(this);
+    this.handleWordKeyDown = this.handleWordKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +38,50 @@ class BrowsePage extends Component {
     }
   }
 
+  async openWordDetails(word) {
+    if (!word) {
+      return;
+    }
+
+    this.setState({
+      selectedWord: word,
+      detailOpen: true,
+      detailError: null
+    });
+
+    try {
+      const fullWord = await getWord(word.id);
+      this.setState({ selectedWord: fullWord });
+    } catch (err) {
+      this.setState({
+        detailError: err.message || 'Failed to load word details.'
+      });
+    }
+  }
+
+  closeWordDetails() {
+    this.setState({ detailOpen: false, selectedWord: null, detailError: null });
+  }
+
+  handleWordUpdated(updatedWord) {
+    if (!updatedWord) {
+      return;
+    }
+    this.setState((prev) => ({
+      words: prev.words.map((word) =>
+        word.id === updatedWord.id ? updatedWord : word
+      ),
+      selectedWord: updatedWord
+    }));
+  }
+
+  handleWordKeyDown(event, word) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openWordDetails(word);
+    }
+  }
+
   renderList() {
     const { words, loading } = this.state;
 
@@ -44,7 +96,14 @@ class BrowsePage extends Component {
     return (
       <ul className="word-list">
         {words.map((word) => (
-          <li key={word.id} className="word-item">
+          <li
+            key={word.id}
+            className="word-item is-clickable"
+            onClick={() => this.openWordDetails(word)}
+            onKeyDown={(event) => this.handleWordKeyDown(event, word)}
+            role="button"
+            tabIndex={0}
+          >
             <h3>{word.term}</h3>
             <p>
               <strong>Definition:</strong> {word.definition}
@@ -65,6 +124,9 @@ class BrowsePage extends Component {
   }
 
   render() {
+    const canEdit = Boolean(
+      this.props.currentUserName || localStorage.getItem('currentUserName')
+    );
     return (
       <div className="card-panel">
         <h2 className="page-title">Browse dictionary</h2>
@@ -72,6 +134,16 @@ class BrowsePage extends Component {
           <div className="status-text">{this.state.error}</div>
         )}
         {this.renderList()}
+        {this.state.detailError && (
+          <div className="status-text">{this.state.detailError}</div>
+        )}
+        <WordDetailModal
+          open={this.state.detailOpen}
+          word={this.state.selectedWord}
+          canEdit={canEdit}
+          onClose={this.closeWordDetails}
+          onUpdated={this.handleWordUpdated}
+        />
       </div>
     );
   }

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import BrowsePage from './BrowsePage';
 import SearchPage from './SearchPage';
 import AddWordPage from './AddWordPage';
+import ExpressionsPage from './ExpressionsPage';
 import NavigationBar from './NavigationBar';
 import './styles/DictionaryLayout.css';
 
@@ -28,10 +29,17 @@ class DictionaryScreen extends Component {
                 path="/browse"
                 element={<BrowsePage currentUserName={currentUserName} />}
               />
-              <Route path="/search" element={<SearchPage />} />
+              <Route
+                path="/search"
+                element={<SearchPage currentUserName={currentUserName} />}
+              />
               <Route
                 path="/add"
                 element={<AddWordPage currentUserName={currentUserName} />}
+              />
+              <Route
+                path="/expressions"
+                element={<ExpressionsPage currentUserName={currentUserName} />}
               />
               <Route
                 path="*"

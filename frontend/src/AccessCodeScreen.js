@@ -79,6 +79,11 @@ class AccessCodeScreen extends Component {
               </button>
             </div>
           )}
+          <img
+            className="access-logo"
+            src="/dict_logo.png"
+            alt="Blandiana Dictionary logo"
+          />
           <h2>Blandiana Dictionary</h2>
           <p className="access-subtitle">
             Enter your name and the shared Blandiana access code.
